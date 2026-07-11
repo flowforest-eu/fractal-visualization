@@ -5,8 +5,6 @@ def generate_tractrix_spiral(a=1.0, x_orig=0, y_orig=0, angle_deg=0, mirror=Fals
     # Parameter t runs from 0 close to pi/2 to avoid tan(pi/2) division by zero
     t = np.linspace(0, np.pi/2 - 0.06, num_points)
     
-    print(t[4000])
-
     # Polar definitions
     r = a * np.cos(t)
     theta = np.tan(t) - t
@@ -21,13 +19,13 @@ def generate_tractrix_spiral(a=1.0, x_orig=0, y_orig=0, angle_deg=0, mirror=Fals
 
     x_base = x_base - shift_x
     y_base = y_base - shift_y
-    
+
     # Rotate by 90 degrees (pi/2) to orient it like an upright question mark/fern; then rotate by angle
     angle_rad = np.radians(angle_deg)
     rotation_angle = np.pi / 2 - angle_rad
     x = x_base * np.cos(rotation_angle) - y_base * np.sin(rotation_angle)
     y = x_base * np.sin(rotation_angle) + y_base * np.cos(rotation_angle)
-    
+
     if mirror == True:
         x = x[0] + (x[0] - x)
     
@@ -58,15 +56,13 @@ def generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, angle_deg=0, mirror=False
     x_base = x_base - x0
     y_base = y_base - y0
 
-    print(x_base)
-    print(y_base)
-
     # Rotate by 90 degrees (pi/2) to orient it like an upright question mark/fern
     angle_rad = np.radians(angle_deg)
+
     rotation_angle = np.pi / 2 - angle_rad
-    x = x_base * np.cos(rotation_angle) - y_base * np.sin(rotation_angle) + x0
-    y = x_base * np.sin(rotation_angle) + y_base * np.cos(rotation_angle) + y0
-    
+    x = x_base * np.cos(rotation_angle) - y_base * np.sin(rotation_angle)
+    y = x_base * np.sin(rotation_angle) + y_base * np.cos(rotation_angle)
+
     if mirror == True:
         x = x[0] + (x[0] - x)
 
@@ -104,51 +100,47 @@ def get_direction_angle(t, angle_deg=0, mirror=False):
 x, y = generate_tractrix_spiral(a=1.0, x_orig=0, y_orig=0, angle_deg=0)
 
 # Plot the curve
-plt.figure(figsize=(6, 8), dpi=100)
+# plt.figure(figsize=(6, 8), dpi=100)
 plt.plot(x, y, color='black', linewidth=2, solid_capstyle='round')
 
-# TEMP
+print()
+
+# Second curve
+x0, y0 = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=0)
+# x1, y1 = generate_tractrix_point(a=1.0, x0=0, y0=0, t=1.35)
+angle_deg = get_direction_angle(t=1.41, angle_deg=0, mirror=False)
+x1, y1 = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.41)
+x, y = generate_tractrix_spiral(a=1.0, x_orig=x1-x0, y_orig=y1-y0, mirror=True, angle_deg=angle_deg)
+plt.plot(x, y, color='black', linewidth=2, solid_capstyle='round')
+
+# Plot origin
+plt.plot(0, 0, 'go', markersize=3)
+
+# Plot some points
 pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.27)
 plt.plot(pointx, pointy, 'ro', markersize=6)
 pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.29)
 plt.plot(pointx, pointy, 'ro', markersize=6)
-
-# # Second curve
-# x0, y0 = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=0)
-# # x1, y1 = generate_tractrix_point(a=1.0, x0=0, y0=0, t=1.35)
-# angle_deg = get_direction_angle(t=1.41, angle_deg=0, mirror=False)
-# x1, y1 = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.41)
-# x, y = generate_tractrix_spiral(a=1.0, x_orig=x1-x0, y_orig=y1-y0, mirror=True, angle_deg=angle_deg)
-# plt.plot(x, y, color='black', linewidth=2, solid_capstyle='round')
-
-# # Plot origin
-# plt.plot(0, 0, 'go', markersize=3)
-
-# # Plot some points
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.27)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.29)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.31)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.33)
-# plt.plot(pointx, pointy, 'bo', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.35)
-# plt.plot(pointx, pointy, 'bo', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.37)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.38)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.39)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.4)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.41)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.42)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
-# pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.43)
-# plt.plot(pointx, pointy, 'ro', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.31)
+plt.plot(pointx, pointy, 'ro', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.33)
+plt.plot(pointx, pointy, 'bo', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.35)
+plt.plot(pointx, pointy, 'bo', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.37)
+plt.plot(pointx, pointy, 'ro', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.38)
+plt.plot(pointx, pointy, 'ro', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.39)
+plt.plot(pointx, pointy, 'ro', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.4)
+plt.plot(pointx, pointy, 'ro', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.41)
+plt.plot(pointx, pointy, 'ro', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.42)
+plt.plot(pointx, pointy, 'ro', markersize=6)
+pointx, pointy = generate_tractrix_point(a=1.0, x_orig=0, y_orig=0, t=1.43)
+plt.plot(pointx, pointy, 'ro', markersize=6)
 
 # Format the image to be a perfect base for the fractal mapping
 plt.axis('equal')

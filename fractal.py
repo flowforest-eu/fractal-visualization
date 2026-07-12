@@ -1,5 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from curve import Curve
+
+
+def generate_tractrix_spiral_from_curve(curve):
+    return generate_tractrix_spiral(scale=curve.scale, x_orig=curve.x_orig, y_orig=curve.y_orig, angle_deg=curve.angle_deg, mirror=curve.mirror, num_points=5000)
+
 
 def generate_tractrix_spiral(scale=1.0, x_orig=0, y_orig=0, angle_deg=0, mirror=False, num_points=5000):
     # Parameter t runs from 0 close to pi/2 to avoid tan(pi/2) division by zero
@@ -99,7 +105,9 @@ def get_direction_angle(t, angle_deg=0, mirror=False):
 
 # Generate the coordinates
 ### TODO: curve1 = generate_tractrix_spiral(curve_params)
-x, y = generate_tractrix_spiral(scale=1.0, x_orig=0, y_orig=0, angle_deg=0)
+curve1 = Curve(x_orig=0, y_orig=0, scale=1.0, angle_deg=0, mirror=False)
+x, y = generate_tractrix_spiral_from_curve(curve1)
+# x, y = generate_tractrix_spiral(scale=1.0, x_orig=0, y_orig=0, angle_deg=0)
 
 # Plot the curve
 plt.figure(figsize=(6, 8), dpi=100)

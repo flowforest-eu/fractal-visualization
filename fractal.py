@@ -2,9 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from curve import Curve
 
-
-# Generate the coordinates
-curve1 = Curve(x_orig=0, y_orig=0, scale=1.0, angle_deg=0, mirror=False)
+# First curve
+curve1 = Curve(x_orig=0, y_orig=0, scale=1.0, angle_deg=0, mirror=True)
 x, y = curve1.generate_spiral()
 
 # Plot the curve
@@ -12,13 +11,23 @@ plt.figure(figsize=(6, 8), dpi=100)
 plt.plot(x, y, color='black', linewidth=2, solid_capstyle='round')
 
 # Second curve
-curve2 = curve1.branch_at_point(t=1.35, scale=1.0, mirror=True)
+curve2 = curve1.branch_at_point(t=1.45, scale=0.9, mirror=False) 
 x, y = curve2.generate_spiral()
 plt.plot(x, y, color='black', linewidth=2, solid_capstyle='round')
 
-# ### Third curve
-curve3 = curve2.branch_at_point(t=1.4, mirror=False, scale=1.0)
+# Third curve
+curve3 = curve2.branch_at_point(t=1.4, scale=0.8,  mirror=False)
 x, y = curve3.generate_spiral()
+plt.plot(x, y, color='black', linewidth=2, solid_capstyle='round')
+
+# 4th curve
+curve4 = curve3.branch_at_point(t=1.31, scale=0.7, mirror=True)
+x, y = curve4.generate_spiral()
+plt.plot(x, y, color='black', linewidth=2, solid_capstyle='round')
+
+# 5th curve
+curve5 = curve4.branch_at_point(t=1.45, scale=0.6, mirror=False)
+x, y = curve5.generate_spiral()
 plt.plot(x, y, color='black', linewidth=2, solid_capstyle='round')
 
 # Plot origin

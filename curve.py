@@ -2,6 +2,16 @@ import numpy as np
 
 
 class Curve:
+    """
+    A class representing a tractrix shape
+
+    Attributes:
+        x_orig (float): origin point (x-axis)
+        y_orig (float): origin point (y-axis)
+        scale (float): scale of the shape, where 1.0 is "original size"
+        angle_deg (float): angle in degrees between vector pointing south and stem of the shape (measured clockwise). if angle_deg = 0, shape will start to grow to south initially.
+        mirror (bool): whether to mirror the shape along y-axis (vertically)
+    """
     def __init__(self, x_orig, y_orig, scale, angle_deg, mirror):
         self.x_orig = x_orig
         self.y_orig = y_orig
@@ -33,14 +43,18 @@ class Curve:
         x_base = self.scale * x_base
         y_base = self.scale * y_base
 
-        # Rotate by 90 degrees (pi/2) to orient it like an upright question mark/fern; then rotate by angle
-        angle_rad = np.radians(self.angle_deg)
-        rotation_angle = np.pi / 2 - angle_rad
-        x = x_base * np.cos(rotation_angle) - y_base * np.sin(rotation_angle)
-        y = x_base * np.sin(rotation_angle) + y_base * np.cos(rotation_angle)
+        # Rotate by 90 degrees (pi/2) to orient it like an upright question mark/fern
+        x_rotated = x_base * np.cos(np.pi / 2) - y_base * np.sin(np.pi / 2)
+        y_rotated = x_base * np.sin(np.pi / 2) + y_base * np.cos(np.pi / 2)
 
+        # if requested, add mirroring
         if self.mirror == True:
-            x = -x
+            x_rotated = -x_rotated
+
+        # Turn by requested angle (clockwise)
+        angle_rad = np.radians(-self.angle_deg)
+        x = x_rotated * np.cos(angle_rad) - y_rotated * np.sin(angle_rad)
+        y = x_rotated * np.sin(angle_rad) + y_rotated * np.cos(angle_rad)
         
         # Move to correct location
         x = x + self.x_orig
@@ -69,16 +83,20 @@ class Curve:
         # Scale by a
         x_base = self.scale * x_base
         y_base = self.scale * y_base
-
+        
         # Rotate by 90 degrees (pi/2) to orient it like an upright question mark/fern
-        angle_rad = np.radians(self.angle_deg)
-        rotation_angle = np.pi / 2 - angle_rad
-        x = x_base * np.cos(rotation_angle) - y_base * np.sin(rotation_angle)
-        y = x_base * np.sin(rotation_angle) + y_base * np.cos(rotation_angle)
+        x_rotated = x_base * np.cos(np.pi / 2) - y_base * np.sin(np.pi / 2)
+        y_rotated = x_base * np.sin(np.pi / 2) + y_base * np.cos(np.pi / 2)
 
+        # if requested, add mirroring
         if self.mirror == True:
-            x = -x
+            x_rotated = -x_rotated
 
+        # Turn by requested angle (clockwise)
+        angle_rad = np.radians(-self.angle_deg)
+        x = x_rotated * np.cos(angle_rad) - y_rotated * np.sin(angle_rad)
+        y = x_rotated * np.sin(angle_rad) + y_rotated * np.cos(angle_rad)
+        
         # Move to correct location
         x = x + self.x_orig
         y = y + self.y_orig
@@ -86,9 +104,7 @@ class Curve:
         return x, y
 
 
-    # TODO add mirror? remove from params here
-    # TODO add angle_deg? remove from params here
-    def get_direction_angle(self, t, angle_deg=0, mirror=False):
+    def get_direction_angle(self, t):
         # Using small epsilon for finite difference to get tangent
         eps = 1e-5
         def get_coords(time):
@@ -103,12 +119,25 @@ class Curve:
         dx = (x2 - x1) / eps
         dy = (y2 - y1) / eps
         
-        # Standard angle in radians (East = 0)
+        # Standard angle in radians (East = 0, counting counter-clockwise)
         alpha = np.arctan2(dy, dx)
         
-        # Convert to degrees and shift so South = 0, East = 90
-        phi = np.degrees(alpha) + 90
+        # Convert to degrees
+        phi = np.degrees(alpha)
+
+        # Inverse (East = 0, counting clockwise)
+        phi = -phi
         
+        # shift so South = 0, West = 90   
+        phi = phi - 90
+
+        # Consider mirroring
+        if self.mirror:
+            phi = -phi
+
+        # Consider original rotation of the shape
+        phi = phi + self.angle_deg
+
         return phi % 360
 
 
@@ -121,7 +150,7 @@ class Curve:
 
     def branch_at_point(self, t, scale, mirror):
         # find origin point for the new curve
-        x_new, y_new = self.calculate_point(t=1.35)
-        new_angle_deg = self.get_direction_angle(t=1.35, angle_deg=self.angle_deg, mirror=self.mirror)
+        x_new, y_new = self.calculate_point(t)
+        new_angle_deg = self.get_direction_angle(t)
         new_curve = Curve(x_orig=x_new, y_orig=y_new, mirror=mirror, angle_deg = new_angle_deg, scale=scale)
         return new_curve
